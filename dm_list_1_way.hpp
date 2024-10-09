@@ -9,7 +9,7 @@ struct DataBlock1Way {
         //prev_data_block_ = nullptr;
 		
         //std::cout << "ctor: " << data_item_ << " " << this << std::endl;
-	}
+	};
 
  	DataBlock1Way() {
         //data_item_ = initialValue;
@@ -17,13 +17,20 @@ struct DataBlock1Way {
         //prev_data_block_ = nullptr;
 		
         //std::cout << "ctor: " << data_item_ << " " << this << std::endl;
-	}   
+	}; 
+    // конструктор копирования для блока данных
+    DataBlock1Way (const DataBlock1Way & other_data_block) {
+        data_item_ = other_data_block.data_item_;
+        next_data_block_ = other_data_block.next_data_block_;
+        //prev_data_block_ = other_data_block.prev_data_block_;
+    };
+  
 
 	~DataBlock1Way() {
 		//std::cout << "dtor: " << data_item_ << " " << this << std::endl;
         next_data_block_ = nullptr;
         //prev_data_block_ = nullptr;
-	}
+	};
 	
 	T data_item_;   // пользовательские данные (хранимый объект)
     DataBlock1Way *next_data_block_;    // указатель на следующий элемент
@@ -41,8 +48,57 @@ class Dm_list_1_way {
             
             //std::cout << "Dm_list_1_way ctor last node " << last_node_ << std::endl;    // Выводим адрес последнего узла в консоль для отладки
         };
+
+        // конструктор копирования
+        Dm_list_1_way (const Dm_list_1_way & other) {
+            m_size = other.m_size; // копируем размер списка
+            head_node_ = new DataBlock1Way<T> (T());
+            *head_node_ = *other.head_node_; // копируем head_node_ (головной блок данных) исходного списка 
+            
+            current_node_ = head_node_->next_data_block_; // двигаем  указатель текущего узла дальше по исходному списку - готовимся копировать остальные
+            last_node_ = head_node_; // Устанавливаем указатель последний узел на только что созданный узел
+            //std::cout << std::endl << "head node copied. old next node address: " << other.head_node_->next_data_block_ << " new next node address " << current_node_ << std::endl;
+            if (current_node_) { // если у нас вообще что-то есть после head_node, то переходим к копированию нод
+                for (int i=0; i<m_size ; i++) {
+                    DataBlock1Way<T> *new_data_block_tmp = new DataBlock1Way<T>(T());
+                    T data_item_tmp = current_node_->data_item_; // копируем сами данные во временную переменную
+                    //std::cout << std::endl << "copied data_item_tmp = " << data_item_tmp << std::endl;
+                    new_data_block_tmp->data_item_ = data_item_tmp; // копируем  данные в новый блок
+                    new_data_block_tmp->next_data_block_=nullptr; // следующего блока пока нет
+                    //new_data_block_tmp->prev_data_block_=last_node_; // ставим указатель на предыдущую ноду
+                    //std::cout << std::endl << "new_data_block_tmp data = " << new_data_block_tmp->data_item_;
+                    //std::cout << std::endl << "new_data_block_tmp prev address = " << new_data_block_tmp->prev_data_block_;
+                    last_node_->next_data_block_=new_data_block_tmp;   // для бывшего последнего узла новый узел станет следующим
+                    last_node_ = new_data_block_tmp; // обновляем указатель на последний
+                    if (current_node_->next_data_block_) { // если у копируемой ноды есть указатель на следующую, то двигаем current node указатель дальше по копируемому списку
+                        current_node_ = current_node_->next_data_block_ ; 
+                    }
+                    else {break;}; // если это был последний элемент, то выходим из цикла
+                    
+                };
+            };
+            //std::cout << std::endl << "last data block data = " << last_node_->data_item_ << std::endl;
+            //std::cout << std::endl << "new list size  = " << m_size << std::endl;
+        };
+
         ~Dm_list_1_way () {
             //std::cout << "Dm_list_1_way dtor " << std::endl;
+            current_node_=head_node_->next_data_block_;
+            for (int i=0; i<=m_size; i++) {
+                DataBlock1Way<T> *current_deleting_node = current_node_;
+                
+                if (current_node_->next_data_block_) { // если у копируемой ноды есть указатель на следующую, то двигаем current node указатель дальше по копируемому списку
+                    current_node_ = current_node_->next_data_block_ ; 
+                    delete current_deleting_node;
+                    //std::cout <<  std::endl << "Node number " << i << "was deleted" ;
+                }
+                else {
+                    delete current_deleting_node;
+                    //std::cout <<  std::endl << "Node number " << i << "was deleted (end node)" ;
+                    break; // если это был последний элемент, то выходим из цикла
+                }; 
+            };
+            
             delete head_node_;
 		    head_node_ = nullptr;
 		    current_node_ = nullptr;

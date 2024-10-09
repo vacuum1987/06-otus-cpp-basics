@@ -6,9 +6,23 @@ class Dm_vector {
         Dm_vector () {};
         Dm_vector (T v) {
             length = 1;
-            *values = v;
+            *values = v;            
+        };
+        // конструктор копирования
+        Dm_vector (const Dm_vector & other) {
+            length = other.length;     // copy number of elements in the array
+            capacity = other.capacity;   // copy capacity of the array (allocated memory)
+
+            T * new_region_copy =  new T [capacity]; // new tmp region in memory
+            for (size_t i = 0; i <= length; ++i) {
+                new_region_copy[i] = other.values[i]; // copy elements from the old array
+            };
+            
+            values = new_region_copy; // save new region values as array values
+            
             
         };
+
         ~Dm_vector () {
             delete [] values;
         };

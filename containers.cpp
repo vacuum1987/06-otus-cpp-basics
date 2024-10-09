@@ -28,6 +28,13 @@ std::cout << std::endl << "Add element '30' in the end:" << std::endl;
 line_container.insert (30, (line_container.size()));
 line_container.printValue ();
 
+/* Dm_vector<int> line_container_2 = line_container; // copy constructor call
+std::cout << std::endl << "New container:" << std::endl;
+line_container_2.printValue ();
+line_container.erase (2);
+std::cout << std::endl << "New container after erase 1 element of original container (it will be the same because it is a copy):" << std::endl;
+line_container_2.printValue (); */
+
 // Dm_list_2_way container operations:
 std::cout << std::endl << "----------------------------------" << std::endl;
 std::cout << std::endl << "dm_list_2_way container operations" << std::endl;
@@ -52,6 +59,16 @@ std::cout << std::endl << "Add element '30' in the end:" << std::endl;
 list_2_way_container.push_back (30);
 list_2_way_container.printValue ();
 
+/* Dm_list_2_way<int> list_2_way_container_2 = list_2_way_container; // copy constructor call
+std::cout << std::endl << "New container:" << std::endl;
+list_2_way_container_2.printValue ();
+list_2_way_container.erase (9);
+
+std::cout << std::endl << "New container after erase 1 element of original container (it will be the same because it is a copy):" << std::endl;
+list_2_way_container_2.printValue ();
+std::cout << std::endl << "old container:" << std::endl;
+list_2_way_container.printValue (); */
+
 // Dm_list_1_way container operations:
 std::cout << std::endl << "----------------------------------" << std::endl;
 std::cout << std::endl << "dm_list_1_way container operations" << std::endl;
@@ -75,4 +92,14 @@ list_1_way_container.printValue ();
 std::cout << std::endl << "Add element '30' in the end:" << std::endl;
 list_1_way_container.push_back (30);
 list_1_way_container.printValue ();
+
+/* Dm_list_1_way<int> list_1_way_container_2 = list_1_way_container; // copy constructor call
+std::cout << std::endl << "New container:" << std::endl;
+list_1_way_container_2.printValue ();
+list_1_way_container.erase (9);
+
+std::cout << std::endl << "New container after erase 1 element of original container (it will be the same because it is a copy):" << std::endl;
+list_1_way_container_2.printValue ();
+std::cout << std::endl << "old container:" << std::endl;
+list_1_way_container.printValue (); */ 
 };
