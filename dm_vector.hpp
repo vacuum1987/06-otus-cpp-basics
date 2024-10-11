@@ -33,14 +33,14 @@ class Dm_vector {
             return length;
         };
         
-        void push_back (T v) {
-            int new_size = length + 1;
-            capacity_check_and_increase (new_size);
-            T * new_region =  new T [capacity]; // new tmp region in memory
+        void push_back (const T new_element) {
+            new_size = length + 1;
+            capacity_check_and_increase ();
+            T * new_region =  new T [new_size]; // new tmp region in memory
             for (size_t i = 0; i < length; ++i) {
                 new_region[i] = values[i]; // copy elements from the old array
             };
-            new_region[length] = std::move(v); // add new element as the last element of array
+            new_region[length] = std::move(new_element); // add new element as the last element of array
             //delete [] values; // delete old array (old region)
             values = new_region; // save new region values as array values
             length += 1; // length updating 
@@ -49,9 +49,9 @@ class Dm_vector {
 
         // inserting new element into the array at the target  position
         void insert (const T new_element, int target_position ) {
-            int new_size = length + 1;
-            capacity_check_and_increase (new_size);
-            T * new_region =  new T [capacity]; // new tmp region in memory
+            new_size = length + 1;
+            capacity_check_and_increase ();
+            T * new_region =  new T [new_size]; // new tmp region in memory
             // copy elements before target position
             for (size_t i = 0; i < target_position; ++i) {
                 new_region[i] = values[i]; // copy elements from the old array
@@ -104,13 +104,16 @@ class Dm_vector {
        
         int length = 0;     // number of elements in the array
         int capacity = 0;   // capacity of the array (allocated memory)
+        int new_size = 0;     // tmp array size during insert and push_back operations
         T * values = new T [length];
 
         // internal function to check and increase array capacity in case of lower than (or equal to) new_size
-        void capacity_check_and_increase ( int new_size) {
+        void capacity_check_and_increase () {
             if (capacity <= new_size) {
                 capacity = new_size * 1.5;
                 //std::cout << "Array capacity was increased. New capacity = " << capacity << std::endl;
+                new_size = capacity;
+                //std::cout << " New size = " << new_size << std::endl;
             };
         };
 };
